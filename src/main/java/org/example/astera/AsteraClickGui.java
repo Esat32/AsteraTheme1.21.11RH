@@ -1,6 +1,7 @@
 package org.example.astera;
 
 import org.example.astera.items.ModuleItem;
+import org.example.astera.items.SliderItem;
 import org.rusherhack.client.api.RusherHackAPI;
 import org.rusherhack.client.api.feature.module.IModule;
 import org.rusherhack.client.api.feature.module.Module;
@@ -82,10 +83,21 @@ public class AsteraClickGui extends PanelHandlerBase<AsteraPanel> {
 		}
 	}
 
-	// render and mouse input both go through this, so clicks stay lined up
+	// scale used for render and mouse input. it only follows the setting while no slider is dragged,
+	// otherwise dragging the Scale slider resizes the slider under the mouse and the value runs away
+	private float appliedScale = 1f;
+
+	@Override
+	public void render(RenderContext context, double mouseX, double mouseY) {
+		if(!SliderItem.isAnyDragging()) {
+			this.appliedScale = AsteraPlugin.THEME.scale.getValue();
+		}
+		super.render(context, mouseX, mouseY);
+	}
+
 	@Override
 	public float getScale() {
-		return super.getScale() * AsteraPlugin.THEME.scale.getValue();
+		return super.getScale() * this.appliedScale;
 	}
 
 	// panels draw in absolute coordinates so hit testing matches what is drawn

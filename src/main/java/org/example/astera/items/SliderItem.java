@@ -13,6 +13,8 @@ import java.util.function.Supplier;
  */
 public class SliderItem extends AsteraItem {
 
+	private static SliderItem active = null;
+
 	private final String label;
 	private final double min, max;
 	private final DoubleSupplier getter;
@@ -60,6 +62,7 @@ public class SliderItem extends AsteraItem {
 	protected boolean onClick(double mouseX, double mouseY, int button) {
 		if(button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
 			this.dragging = true;
+			active = this;
 			this.update(mouseX);
 			return true;
 		}
@@ -70,7 +73,12 @@ public class SliderItem extends AsteraItem {
 	protected void onRelease(double mouseX, double mouseY, int button) {
 		if(button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
 			this.dragging = false;
+			if(active == this) active = null;
 		}
+	}
+
+	public static boolean isAnyDragging() {
+		return active != null;
 	}
 
 }
