@@ -1,16 +1,12 @@
 {
-  "Plugin-Class": "org.example.ExamplePlugin",
-  "Name": "${project.plugin_name}",
+  "Plugin-Class": "org.example.astera.AsteraPlugin",
+  "Name": "Astera Theme",
   "Version": "${project.plugin_version}",
-  "Description": "Example rusherhack core plugin",
-  "URL": "https://github.com/RusherDevelopment/example-core-plugin",
+  "Description": "ClickGUI theme styled after the Astera client",
   "Authors": [
-    "John200410"
+    "Esat32"
   ],
   "Minecraft-Versions": [
     "${project.minecraft_version}"
-  ],
-  "Mixin-Configs": [
-    "mixins.example-plugin.json"
   ]
 }
