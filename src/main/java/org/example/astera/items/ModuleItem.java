@@ -4,20 +4,21 @@ import org.example.astera.AsteraPanel;
 import org.lwjgl.glfw.GLFW;
 import org.rusherhack.client.api.RusherHackAPI;
 import org.rusherhack.client.api.bind.IBindManager;
-import org.rusherhack.client.api.feature.module.IModule;
 import org.rusherhack.client.api.feature.module.ToggleableModule;
 import org.rusherhack.client.api.render.RenderContext;
+import org.rusherhack.client.api.render.font.IFontRenderer;
+import org.rusherhack.core.feature.IFeatureConfigurable;
 import org.rusherhack.core.interfaces.IToggleable;
 import org.rusherhack.core.setting.Setting;
 
 /**
- * Left click toggles, right click shows settings
+ * Module or HUD element row. Left click toggles, right click shows settings
  */
 public class ModuleItem extends AsteraItem {
 
-	private final IModule module;
+	private final IFeatureConfigurable module;
 
-	public ModuleItem(AsteraPanel panel, IModule module) {
+	public ModuleItem(AsteraPanel panel, IFeatureConfigurable module) {
 		super(panel, null);
 		this.module = module;
 
@@ -38,10 +39,16 @@ public class ModuleItem extends AsteraItem {
 	protected void renderRow(RenderContext context, double mouseX, double mouseY) {
 		final boolean enabled = this.isEnabled();
 		if(enabled) {
-			this.fillRow(this.theme().enabledFill());
+			this.fillRowGradient(this.theme().enabledAlpha.getValue());
 		}
 		this.renderHover(mouseX, mouseY);
-		this.drawLabel(this.module.getDisplayName(), enabled ? this.theme().enabledTextColor.getValueRGB() : this.theme().textColor.getValueRGB());
+		final int textColor = enabled ? this.theme().enabledTextColor.getValueRGB() : this.theme().textColor.getValueRGB();
+		this.drawLabel(this.module.getDisplayName(), textColor);
+
+		//expander
+		final String marker = this.open ? "-" : "+";
+		final IFontRenderer fr = this.getFontRenderer();
+		fr.drawString(marker, this.valueRight() - fr.getStringWidth(marker), this.textY(), enabled ? textColor : this.theme().valueColor.getValueRGB(), this.theme().textShadow.getValue());
 	}
 
 	@Override

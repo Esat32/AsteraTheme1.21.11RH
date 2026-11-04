@@ -71,17 +71,22 @@ public abstract class AsteraItem extends ElementBase implements IPanelItem {
 		return this.panel.getWidth() - AsteraPanel.OUTLINE * 2;
 	}
 
+	// height of this item's own row, children not included
+	protected double rowHeight() {
+		return ROW;
+	}
+
 	@Override
 	public double getHeight() {
-		return ROW;
+		return this.rowHeight();
 	}
 
 	@Override
 	public double getHeight(boolean total) {
 		if(!total || !this.open) {
-			return ROW;
+			return this.rowHeight();
 		}
-		double height = ROW;
+		double height = this.rowHeight();
 		for(AsteraItem child : this.children) {
 			if(child.isVisible()) height += child.getHeight(true);
 		}
@@ -97,7 +102,13 @@ public abstract class AsteraItem extends ElementBase implements IPanelItem {
 		this.renderRow(context, mouseX, mouseY);
 
 		if(this.open) {
-			double childY = this.getY() + ROW;
+			//translucent gradient behind the opened settings
+			final double childrenHeight = this.getHeight(true) - this.rowHeight();
+			if(childrenHeight > 0) {
+				this.theme().fillGradient(this.getRenderer(), this.getX() + 1, this.getY() + this.rowHeight(), this.getWidth() - 2, childrenHeight, this.theme().optionsAlpha.getValue());
+			}
+
+			double childY = this.getY() + this.rowHeight();
 			for(AsteraItem child : this.children) {
 				if(!child.isVisible()) continue;
 				child.setY(childY);
@@ -125,12 +136,14 @@ public abstract class AsteraItem extends ElementBase implements IPanelItem {
 
 	// row fill inset by 1 unit, like Astera's enabled rows
 	protected void fillRow(int color) {
-		this.getRenderer().drawRectangle(this.getX() + 1, this.getY() + 1, this.getWidth() - 2, ROW - 1, color);
+		this.getRenderer().drawRectangle(this.getX() + 1, this.getY() + 1, this.getWidth() - 2, this.rowHeight() - 1, color);
 	}
 
-	protected void fillRow(double fraction, int color) {
-		if(fraction <= 0) return;
-		this.getRenderer().drawRectangle(this.getX() + 1, this.getY() + 1, (this.getWidth() - 2) * Math.min(fraction, 1), ROW - 1, color);
+	// gradient row fill, used for enabled modules and toggles
+	protected void fillRowGradient(int alpha) {
+		this.theme().fillGradient(this.getRenderer(), this.getX() + 1, this.getY() + 1, this.getWidth() - 2, this.rowHeight() - 1, alpha);
+		//bright edge on the left, marks enabled rows
+		this.getRenderer().drawRectangle(this.getX() + 1, this.getY() + 1, 1, this.rowHeight() - 1, 0xFFFFFFFF);
 	}
 
 	protected void renderHover(double mouseX, double mouseY) {
@@ -172,12 +185,12 @@ public abstract class AsteraItem extends ElementBase implements IPanelItem {
 	 */
 
 	public boolean isRowHovered(double mouseX, double mouseY) {
-		return mouseX >= this.getX() && mouseX < this.getX() + this.getWidth() && mouseY >= this.getY() && mouseY < this.getY() + ROW;
+		return mouseX >= this.getX() && mouseX < this.getX() + this.getWidth() && mouseY >= this.getY() && mouseY < this.getY() + this.rowHeight();
 	}
 
 	@Override
 	public boolean isHovered(double mouseX, double mouseY, boolean includeSubItems) {
-		final double height = includeSubItems ? this.getHeight(true) : ROW;
+		final double height = includeSubItems ? this.getHeight(true) : this.rowHeight();
 		return mouseX >= this.getX() && mouseX < this.getX() + this.getWidth() && mouseY >= this.getY() && mouseY < this.getY() + height;
 	}
 

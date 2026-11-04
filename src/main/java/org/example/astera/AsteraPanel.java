@@ -3,12 +3,14 @@ package org.example.astera;
 import org.example.astera.items.AsteraItem;
 import org.example.astera.items.ModuleItem;
 import org.lwjgl.glfw.GLFW;
+import org.rusherhack.client.api.feature.hud.IHudElement;
 import org.rusherhack.client.api.feature.module.IModule;
 import org.rusherhack.client.api.feature.module.ModuleCategory;
 import org.rusherhack.client.api.render.IRenderer2D;
 import org.rusherhack.client.api.render.RenderContext;
 import org.rusherhack.client.api.render.font.IFontRenderer;
 import org.rusherhack.client.api.ui.panel.PanelBase;
+import org.rusherhack.client.api.ui.panel.PanelHandlerBase;
 import org.rusherhack.core.feature.IFeature;
 
 /**
@@ -18,8 +20,8 @@ public class AsteraPanel extends PanelBase<AsteraItem> {
 
 	// sizes in gui units, measured from the Astera screenshot at gui scale 2
 	public static final double WIDTH = 112;
-	public static final double HEADER_HEIGHT = 16;
-	public static final double ROW_HEIGHT = 15;
+	public static final double HEADER_HEIGHT = 12;
+	public static final double ROW_HEIGHT = 13;
 	public static final double OUTLINE = 1;
 	public static final double GAP = 2;
 	public static final double MARGIN = 3;
@@ -29,7 +31,7 @@ public class AsteraPanel extends PanelBase<AsteraItem> {
 	private boolean dragging = false;
 	private double dragX, dragY;
 
-	public AsteraPanel(AsteraClickGui handler, String name) {
+	public AsteraPanel(PanelHandlerBase<AsteraPanel> handler, String name) {
 		super(handler, name);
 	}
 
@@ -41,6 +43,9 @@ public class AsteraPanel extends PanelBase<AsteraItem> {
 	public AsteraItem createFeatureItem(IFeature feature) {
 		if(feature instanceof IModule module) {
 			return new ModuleItem(this, module);
+		}
+		if(feature instanceof IHudElement element) {
+			return new ModuleItem(this, element);
 		}
 		return null;
 	}
@@ -60,8 +65,8 @@ public class AsteraPanel extends PanelBase<AsteraItem> {
 		final int accent = theme.accent();
 
 		//header
-		renderer.drawRectangle(x, y, WIDTH, HEADER_HEIGHT, accent);
-		fr.drawString(this.getTitle(), x + 5, y + (HEADER_HEIGHT - fr.getFontHeight()) / 2 + 0.5, theme.headerTextColor.getValueRGB(), theme.textShadow.getValue());
+		theme.fillGradient(renderer, x, y, WIDTH, HEADER_HEIGHT, 255);
+		fr.drawString(this.getTitle(), x + 4, y + (HEADER_HEIGHT - fr.getFontHeight()) / 2 + 0.5, theme.headerTextColor.getValueRGB(), theme.textShadow.getValue());
 
 		if(!this.open) {
 			return;
@@ -70,11 +75,12 @@ public class AsteraPanel extends PanelBase<AsteraItem> {
 		final double bodyY = y + HEADER_HEIGHT;
 		final double bodyHeight = this.getContentHeight();
 
-		//body tint and outline
+		//dark body and faint outline
 		renderer.drawRectangle(x + OUTLINE, bodyY, WIDTH - OUTLINE * 2, bodyHeight, theme.bodyFill());
-		renderer.drawRectangle(x, bodyY, OUTLINE, bodyHeight + OUTLINE, accent);
-		renderer.drawRectangle(x + WIDTH - OUTLINE, bodyY, OUTLINE, bodyHeight + OUTLINE, accent);
-		renderer.drawRectangle(x + OUTLINE, bodyY + bodyHeight, WIDTH - OUTLINE * 2, OUTLINE, accent);
+		final int edge = AsteraTheme.withAlpha(accent, 90);
+		renderer.drawRectangle(x, bodyY, OUTLINE, bodyHeight + OUTLINE, edge);
+		renderer.drawRectangle(x + WIDTH - OUTLINE, bodyY, OUTLINE, bodyHeight + OUTLINE, edge);
+		renderer.drawRectangle(x + OUTLINE, bodyY + bodyHeight, WIDTH - OUTLINE * 2, OUTLINE, edge);
 
 		double itemY = bodyY;
 		for(AsteraItem item : this.items) {
@@ -158,11 +164,14 @@ public class AsteraPanel extends PanelBase<AsteraItem> {
 		}
 	}
 
-	// returns false so every panel scrolls together
+	// only the panel under the mouse scrolls
 	@Override
 	public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+		if(!this.isHovered(mouseX, mouseY)) {
+			return false;
+		}
 		this.setY(this.getY() + Math.signum(delta) * AsteraPlugin.THEME.scrollSpeed.getValue());
-		return false;
+		return true;
 	}
 
 	@Override

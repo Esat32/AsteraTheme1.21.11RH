@@ -1,5 +1,6 @@
 package org.example.astera;
 
+import net.minecraft.client.Minecraft;
 import org.example.astera.items.ModuleItem;
 import org.example.astera.items.SliderItem;
 import org.rusherhack.client.api.RusherHackAPI;
@@ -15,19 +16,20 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * Lays out one panel per module category in a single row, Astera order first
+ * Lays out one panel per module category in a single row, Rusherhack's default order first
  */
 public class AsteraClickGui extends PanelHandlerBase<AsteraPanel> {
 
 	private static final List<ModuleCategory> ORDER = List.of(
 			ModuleCategory.COMBAT,
 			ModuleCategory.MISC,
-			ModuleCategory.RENDER,
 			ModuleCategory.MOVEMENT,
 			ModuleCategory.PLAYER,
+			ModuleCategory.RENDER,
 			ModuleCategory.WORLD,
 			ModuleCategory.CHAT,
-			ModuleCategory.CLIENT
+			ModuleCategory.CLIENT,
+			ModuleCategory.EXTERNAL
 	);
 
 	public AsteraClickGui() {
@@ -57,7 +59,8 @@ public class AsteraClickGui extends PanelHandlerBase<AsteraPanel> {
 				if(module instanceof Module m && m.isHidden()) continue;
 				modules.add(module);
 			}
-			if(modules.isEmpty()) {
+			//External is for modules from other plugins, keep its tab even when nothing is loaded
+			if(modules.isEmpty() && category != ModuleCategory.EXTERNAL) {
 				continue;
 			}
 			modules.sort(Comparator.comparing(m -> m.getDisplayName().toLowerCase()));
@@ -90,9 +93,26 @@ public class AsteraClickGui extends PanelHandlerBase<AsteraPanel> {
 	@Override
 	public void render(RenderContext context, double mouseX, double mouseY) {
 		if(!SliderItem.isAnyDragging()) {
-			this.appliedScale = AsteraPlugin.THEME.scale.getValue();
+			this.appliedScale = this.fitScale(AsteraPlugin.THEME.scale.getValue());
+		}
+		if(AsteraPlugin.THEME.backgroundBlur.getValue()) {
+			try {
+				context.graphics().blurBeforeThisStratum();
+			} catch(IllegalStateException ignored) {
+				//already blurred this frame
+			}
 		}
 		super.render(context, mouseX, mouseY);
+	}
+
+	// caps the scale so the full panel row fits the window width
+	private float fitScale(float wanted) {
+		if(!AsteraPlugin.THEME.autoFit.getValue() || this.panels.isEmpty()) {
+			return wanted;
+		}
+		final double rowWidth = AsteraPanel.MARGIN * 2 + this.panels.size() * (AsteraPanel.WIDTH + AsteraPanel.GAP) - AsteraPanel.GAP;
+		final double available = Minecraft.getInstance().getWindow().getGuiScaledWidth() / (double) super.getScale();
+		return (float) Math.min(wanted, available / rowWidth);
 	}
 
 	@Override
