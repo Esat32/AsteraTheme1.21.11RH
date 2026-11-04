@@ -1,10 +1,24 @@
 # Astera Theme — RusherHack 1.21.11
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/3a24148f-2451-4d53-a786-04787cab0290" alt="Astera ClickGUI" width="800"/>
+  <img src="docs/screenshots/clickgui.png" alt="Astera ClickGUI" width="800"/>
 </p>
 
 A clean, Astera client style **ClickGUI theme** for RusherHack. Periwinkle category panels, soft tinted bodies and highlighted rows for enabled modules. It looks just like Astera, but runs on RusherHack.
+
+## Screenshots
+
+**HUD**
+
+<p align="center">
+  <img src="docs/screenshots/hud.png" alt="Astera HUD" width="800"/>
+</p>
+
+**Windows**
+
+<p align="center">
+  <img src="docs/screenshots/windows.png" alt="Astera windows" width="800"/>
+</p>
 
 ## Features
 
