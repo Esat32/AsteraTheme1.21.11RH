@@ -36,8 +36,8 @@ public class AsteraHudHandler extends HudHandlerBase {
 		super.tick();
 
 		final AsteraTheme theme = AsteraPlugin.THEME;
-		if(theme.layoutVersion.getValue() < LAYOUT_VERSION && Minecraft.getInstance().getWindow() != null) {
-			theme.layoutVersion.setValue(LAYOUT_VERSION);
+		if(theme.layoutOnLoad.getValue() && !this.layoutApplied && Minecraft.getInstance().getWindow() != null) {
+			this.layoutApplied = true;
 			this.applyHudLayout();
 			LOGGER.info("[Astera] applied preset HUD layout");
 		}
@@ -67,8 +67,9 @@ public class AsteraHudHandler extends HudHandlerBase {
 		}
 	}
 
-	// raise when the preset layout changes so it is applied again once
-	private static final int LAYOUT_VERSION = 4;
+	// the preset is applied once per game start
+	private boolean layoutApplied = false;
+
 	private static final int STACK = 14;
 
 	/**

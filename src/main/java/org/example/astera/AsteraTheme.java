@@ -37,7 +37,7 @@ public class AsteraTheme extends ThemeBase {
 	public final BooleanSetting syncHudColors = new BooleanSetting("SyncHudColors", "Switch on to apply once: HUD element colors follow the theme and the client primary color becomes the theme color. Switches itself back off.", false);
 	public final BooleanSetting applyHudLayout = new BooleanSetting("ApplyHudLayout", "Switch on to apply once: enables the Astera preset HUD elements and moves them to their preset positions. Switches itself back off.", false);
 	public final BooleanSetting backgroundBlur = new BooleanSetting("BackgroundBlur", "Blurs the screen behind the ClickGUI. Strength follows Minecraft's menu background blur video setting.", true);
-	public final NumberSetting<Integer> layoutVersion = new NumberSetting<>("LayoutVersion", "Version of the preset HUD layout that was applied. The preset is applied again on start when it is newer than this. Set to 0 to apply it again.", 0, 0, 100);
+	public final BooleanSetting layoutOnLoad = new BooleanSetting("LayoutOnLoad", "Places the preset HUD elements again every time the game starts, so they fit the current window and GUI scale. Moves you made last session are replaced.", true);
 	public final BooleanSetting textShadow = new BooleanSetting("TextShadow", "Astera draws text without shadow", false);
 
 	private final AsteraClickGui clickGui;
@@ -46,7 +46,7 @@ public class AsteraTheme extends ThemeBase {
 
 	public AsteraTheme() {
 		super("Astera", "Astera client styled ClickGUI", new Color(0x8E, 0x74, 0xFF));
-		this.registerSettings(this.scale, this.autoFit, this.backgroundBlur, this.syncHudColors, this.applyHudLayout, this.layoutVersion, this.textShadow, this.gradientStart, this.gradientEnd, this.bodyColor, this.bodyAlpha, this.enabledAlpha, this.optionsAlpha, this.hoverAlpha, this.textColor, this.enabledTextColor, this.headerTextColor, this.valueColor, this.asteraNames, this.scrollSpeed);
+		this.registerSettings(this.scale, this.autoFit, this.backgroundBlur, this.syncHudColors, this.applyHudLayout, this.layoutOnLoad, this.textShadow, this.gradientStart, this.gradientEnd, this.bodyColor, this.bodyAlpha, this.enabledAlpha, this.optionsAlpha, this.hoverAlpha, this.textColor, this.enabledTextColor, this.headerTextColor, this.valueColor, this.asteraNames, this.scrollSpeed);
 		this.clickGui = new AsteraClickGui();
 		this.hudHandler = new AsteraHudHandler();
 		this.windowHandler = new AsteraWindowHandler();
