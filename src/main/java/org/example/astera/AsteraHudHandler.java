@@ -97,9 +97,20 @@ public class AsteraHudHandler extends HudHandlerBase {
 		//around the hotbar, which is 182 gui units wide and centered
 		final double center = w / 2;
 		this.place("PlayerView", bottomLeft, center - 142, h);
-		this.place("Speed", bottomLeft, center - 89, h - 55);
-		this.place("Durability", bottomLeft, center - 89, h - 41);
-		this.place("Armor", topLeft, center + 11, h - 59);
+		//armor on the right half above the hunger bar
+		this.place("AsteraArmor", bottomLeft, center + 11, h - 40);
+		//durability and speed on the left above minecraft's own armor bar, which sits over the health bar
+		this.place("AsteraDurability", bottomLeft, center - 91, h - 62);
+		this.place("Speed", bottomLeft, center - 91, h - 62 - STACK);
+		//the Astera versions show a % sign in percent mode, so they replace the built in ones
+		this.disable("Durability");
+		this.disable("Armor");
+		//saved settings override the elements' defaults, so make their text follow the theme color here
+		for(HudElement element : RusherHackAPI.getHudManager().getFeatures()) {
+			if(element.getName().equals("AsteraDurability") || element.getName().equals("AsteraArmor")) {
+				syncColors(element.getSettings());
+			}
+		}
 		this.place("Inventory", bottomLeft, center + 91 + 4, h);
 	}
 
@@ -115,6 +126,15 @@ public class AsteraHudHandler extends HudHandlerBase {
 			field.set(element, HudElement.calculateAlignment(element));
 		} catch(ReflectiveOperationException | RuntimeException e) {
 			LOGGER.warn("[Astera] could not set alignment of {}", element.getName(), e);
+		}
+	}
+
+	private void disable(String name) {
+		for(HudElement element : RusherHackAPI.getHudManager().getFeatures()) {
+			if(element.getName().equalsIgnoreCase(name)) {
+				element.setToggled(false);
+				return;
+			}
 		}
 	}
 
