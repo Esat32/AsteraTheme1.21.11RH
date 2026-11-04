@@ -18,7 +18,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 /**
- * Astera look for HUD elements: dark body with a thin gradient line on top
+ * Astera look for HUD elements: translucent gradient background
  */
 public class AsteraHudHandler extends HudHandlerBase {
 
@@ -138,8 +138,7 @@ public class AsteraHudHandler extends HudHandlerBase {
 
 	@Override
 	protected void renderHudElementBackground(HudElement hudElement, RenderContext renderContext, IRenderer2D renderer, double width, double height, int color) {
-		renderer.drawRectangle(0, 0, width, height, color);
-		AsteraPlugin.THEME.fillGradient(renderer, 0, 0, width, 1, 255);
+		AsteraPlugin.THEME.fillGradient(renderer, 0, 0, width, height, AsteraPlugin.THEME.hudOpacity.getValue());
 	}
 
 	/**

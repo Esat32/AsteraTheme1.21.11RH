@@ -23,6 +23,7 @@ public class AsteraTheme extends ThemeBase {
 	public final ColorSetting gradientEnd = new ColorSetting("GradientEnd", new Color(0xE8, 0x1C, 0xFF)).setThemeSync(false);
 	public final ColorSetting bodyColor = new ColorSetting("BodyColor", new Color(0x15, 0x0F, 0x26)).setThemeSync(false);
 	public final NumberSetting<Integer> bodyAlpha = new NumberSetting<>("BodyOpacity", "Opacity of the panel body, lower is more see-through", 150, 0, 255);
+	public final NumberSetting<Integer> hudOpacity = new NumberSetting<>("HudOpacity", "Opacity of the gradient behind HUD elements", 28, 0, 255);
 	public final NumberSetting<Integer> enabledAlpha = new NumberSetting<>("EnabledAlpha", "Opacity of enabled module rows", 128, 0, 255);
 	public final NumberSetting<Integer> optionsAlpha = new NumberSetting<>("OptionsAlpha", "Opacity of the gradient behind opened settings", 56, 0, 255);
 	public final NumberSetting<Integer> hoverAlpha = new NumberSetting<>("HoverAlpha", "Opacity of the hover overlay", 18, 0, 255);
@@ -46,7 +47,7 @@ public class AsteraTheme extends ThemeBase {
 
 	public AsteraTheme() {
 		super("Astera", "Astera client styled ClickGUI", new Color(0x8E, 0x74, 0xFF));
-		this.registerSettings(this.scale, this.autoFit, this.backgroundBlur, this.syncHudColors, this.applyHudLayout, this.layoutOnLoad, this.textShadow, this.gradientStart, this.gradientEnd, this.bodyColor, this.bodyAlpha, this.enabledAlpha, this.optionsAlpha, this.hoverAlpha, this.textColor, this.enabledTextColor, this.headerTextColor, this.valueColor, this.asteraNames, this.scrollSpeed);
+		this.registerSettings(this.scale, this.autoFit, this.backgroundBlur, this.syncHudColors, this.applyHudLayout, this.layoutOnLoad, this.textShadow, this.gradientStart, this.gradientEnd, this.bodyColor, this.bodyAlpha, this.hudOpacity, this.enabledAlpha, this.optionsAlpha, this.hoverAlpha, this.textColor, this.enabledTextColor, this.headerTextColor, this.valueColor, this.asteraNames, this.scrollSpeed);
 		this.clickGui = new AsteraClickGui();
 		this.hudHandler = new AsteraHudHandler();
 		this.windowHandler = new AsteraWindowHandler();
